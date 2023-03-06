@@ -1,1 +1,9 @@
-
+.table {
+    border: 2px solid black !important;
+}
+th {
+    border: 2px solid black !important;
+}
+td {
+    border: 2px solid black !important;
+}
