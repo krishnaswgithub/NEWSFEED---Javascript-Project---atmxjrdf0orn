@@ -1,47 +1,193 @@
-function insertItem() {
-    var name_elem=document.getElementById("item-name-input");
-    var name=name_elem.value;
-    var price_elem=document.getElementById("item-price-input");
-    var price=parseInt(price_elem.value);
+const gameContainer = document.getElementById('gameContainer');
+const scoreBoard = document.getElementById('pointsEarned');
+const GRID_SIZE = 1600;
+const RENDER_INTERVAL = 100;
+const GAME_ROW = 40;
+let gameScore = 0;
+let snakeBody = [800];
+let gameOver = false;
+let gameInterval;
+let inputDirection = -1;
+let gamePaused = false;
+let foodPosition = 780;
 
-    name_elem.value='';
-    price_elem.value='';
+//creating main functionality
+const createBoxes = (total) => {
+     for (let i = 1; i <= total; i++) {
+          let box = document.createElement('div');
+          if (i == foodPosition)
+               box.setAttribute('class', 'food');
+          box.setAttribute('id', `pixel${i}`);
+          gameContainer.appendChild(box);
+     }
+}
+createBoxes(GRID_SIZE);
 
-    if(name=='' || isNaN(price)){
-        return;
-    }
-    
-    var newRow=document.createElement('tr');
-    var td1=document.createElement('td');
-    var td2=document.createElement('td');
-    var td3=document.createElement('td');
+function init() {
+     if (!gameOver) {
+          gameInterval = setInterval(() => {
+               update();
+          }, RENDER_INTERVAL);
+     }
+}
+init();
+function update() {
+     updateSnake();
+     draw();
+     updateFood();
+}
 
-    let sr_elem=document.querySelectorAll('[data-type=sr_no]');
-    let counter=sr_elem.length;
+function draw() {
+     drawSnake();
+     if (snakeHeadIntersection()) {
+          clearInterval(gameInterval);
+     };
+}
 
-    td1.innerText=counter+1; //todo fixed
-    td2.innerText=name;
-    td3.innerText=price;
+function updateSnake() {
+     snakeBody.forEach(segment => {
+          let element = document.getElementById(`pixel${segment}`);
+          element.removeAttribute('class');
+     });
+     for (let i = snakeBody.length - 2; i >= 0; i--) {
+          snakeBody[i + 1] = snakeBody[i];
+     }
+     updateSnakeHead();
+}
 
-    td1.dataset.type="sr_no";
-    td2.dataset.nsTest="item-name";
-    td3.setAttribute("data-ns-test","item-price");
+function updateSnakeHead() {
+     let snakeHead = snakeBody[0];
+     if ((snakeHead % GAME_ROW == 1) && (inputDirection === -1)) {
+          snakeBody[0] += (GAME_ROW - 1);
+     }
+     else if ((snakeHead % GAME_ROW == 0) && (inputDirection === 1)) {
+          snakeBody[0] -= (GAME_ROW - 1);
+     }
+     else if (snakeHead > 0 && snakeHead <= (GAME_ROW) && (inputDirection === -GAME_ROW)) {
+          snakeBody[0] += (GRID_SIZE - GAME_ROW);
+     }
+     else if (snakeHead > (GRID_SIZE - GAME_ROW) && snakeHead <= (GRID_SIZE) && (inputDirection === GAME_ROW)) {
+          snakeBody[0] += (GAME_ROW - GRID_SIZE);
+     } else {
+          snakeBody[0] += inputDirection;
+     }
+}
 
-    newRow.appendChild(td1);
-    newRow.appendChild(td2);
-    newRow.appendChild(td3);
+function drawSnake() {
+     snakeBody.forEach(segment => {
+          let element = document.getElementById(`pixel${segment}`);
+          element.setAttribute('class', 'snakeBodyPixel');
+     });
+     let snakeHead = document.getElementById(`pixel${snakeBody[0]}`);
+     snakeHead.classList.add(headStyle(inputDirection));
+}
 
-    let mainTable=document.getElementsByTagName('table')[0];
-    mainTable.appendChild(newRow);
+function headStyle(position) {
+     let headClass;
+     switch (position) {
+          case 1:
+               headClass = 'ltr';
+               break;
+          case -1:
+               headClass = 'rtl';
+               break;
+          case GAME_ROW:
+               headClass = 'ttb';
+               break;
+          case -GAME_ROW:
+               headClass = 'btt';
+               break;
+     }
+     return headClass;
+}
 
-    let grandTotal=0;
-    let price_elements = document.querySelectorAll('[data-ns-test=item-price]');
-    price_elements.forEach((single_price_element) => {
-        let single_price=single_price_element.innerText;
-        single_price=parseInt(single_price);
-        grandTotal+=single_price;
-    });
+function snakeHeadIntersection() {
+     let head = snakeBody[0];
+     let snakeExceptHead = snakeBody.slice(1);
+     return snakeExceptHead.some(segment => head === segment);
+}
 
-    document.querySelector('[data-ns-test=grandTotal]').innerText=grandTotal;
-    
+//Add Event Listeners
+window.addEventListener('keydown', (event) => {
+     getInputDirection(event);
+     pauseResumeGame(event.key);
+});
+function getInputDirection(event) {
+     switch (event.key) {
+          case "ArrowUp":
+               if (inputDirection == GAME_ROW) return;
+               inputDirection = -GAME_ROW;
+               break;
+          case "ArrowDown":
+               if (inputDirection == -GAME_ROW) return;
+               inputDirection = GAME_ROW;
+               break;
+          case "ArrowRight":
+               if (inputDirection == -1) return;
+               inputDirection = 1;
+               break;
+          case "ArrowLeft":
+               if (inputDirection == 1) return;
+               inputDirection = -1;
+               break;
+     }
+}
+
+function pauseResumeGame(keyPressed) {
+     if (keyPressed == ' ') {
+          gamePaused = !gamePaused;
+          if (gamePaused) {
+               clearInterval(gameInterval);
+          } else {
+               init();
+          }
+     }
+}
+
+//Food Code
+
+function randomGridPosition() {
+     return Math.floor((Math.random() * GRID_SIZE) + 1);
+}
+
+function updateFood() {
+     if(snakeFoodOverlap()){
+          removeFood(foodPosition);
+          snakeBody.push(foodPosition);
+          drawFood();
+          scoreIncrement();
+     }
+}
+
+function scoreIncrement(){
+     gameScore++;
+     scoreBoard.innerHTML = gameScore;
+}
+
+function removeFood(position){
+     let previousFood = document.getElementById(`pixel${position}`);
+     previousFood.classList.remove('food');
+}
+
+function drawFood() {
+     foodPosition = getRandomFoodPosition();
+     let currentFood = document.getElementById(`pixel${foodPosition}`);
+     currentFood.classList.add('food');
+}
+
+function getRandomFoodPosition() {
+     let newFoodPosition;
+     while (!newFoodPosition || checkFoodOnSnake(newFoodPosition)) {
+          newFoodPosition = randomGridPosition()
+     }
+     return newFoodPosition
+}
+
+function checkFoodOnSnake(foodPosition) {
+     return snakeBody.some(segment => foodPosition === segment);
+}
+
+function snakeFoodOverlap() {
+     if (snakeBody[0] === foodPosition) return true;
+     return false;
 }
