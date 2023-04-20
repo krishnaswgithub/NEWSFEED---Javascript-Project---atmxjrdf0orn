@@ -4,69 +4,73 @@
     box-sizing: border-box;
 }
 body{
-    width: 100vw;
-    height: 100vh;
-    display: grid;
-    place-content: center;
-    background-color: #bbbbbb;
+    display: flex;
+    flex-direction: column;
+    width: 100dvw;
 }
-.container{
-    padding: 8px;
-    border-radius: 5px;
-    box-shadow:
-    inset -7px -7px 10px #ec4444,
-    inset 7px 7px 10px #e04343;
+#container{
+    display: flex;
+    flex-direction: column; 
+    width: 70%;
+    min-height: 200px;
+    background-color: black;
+    margin: auto;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    padding-left: 3%;
+    padding-right: 3%;
+    border: 1px solid black;
+    border-radius: 10px;
 }
-#gameContainer{
-    width: 400px;
-    height: 400px;
-    display: grid;
-    grid-template-columns: repeat(40, 1fr);
-    grid-template-rows: repeat(40, 1fr);
-    border-style: solid;
-    border-width: 1px;
-    border-color: #bd3939 #701d1d #723939 #6c1919;
+.sub-container{
+    background-color: white;
+    width: 70%;
+    min-height: 50px;
+    margin: auto;
+    text-align: center;
+    text-size-adjust: 15px;
+    font-weight: bolder;
+    margin-bottom: 3%;
 }
-.scoreBoard{
-    margin-top: 10px;
-    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: blue;
+.btn-pad2{
+  padding-right: 10%;
+  padding-left: 10%;
+  margin-bottom: 3%;
+  font-weight: bolder;
 }
-.snakeBodyPixel{
-    background: radial-gradient(#07a612, #c00808);
-    border-radius: 2px;
+.btn-pad{
+    margin-right: 15%;
+    margin-left: 4%;
+    padding-right: 10%;
+    padding-left: 10%;
+    margin-bottom: 3%;
+    font-weight: bolder;
 }
-.ltr{
-    border-radius: 0px;
-    border-top-right-radius: 50%;
-    border-bottom-right-radius: 50%;
+.header-section{
+    text-align: center;
 }
-.rtl{
-    border-radius: 0px;
-    border-top-left-radius: 50%;
-    border-bottom-left-radius: 50%;
+.header1{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin-top: 2%;
+    margin-bottom: 3%;
 }
-.btt{
-    border-radius: 0px;
-    border-top-right-radius: 50%;
-    border-top-left-radius: 50%;
+.header2{
+    font-family:'papyrus';
+    margin-bottom: 3%;
 }
-.ttb{
-    border-radius: 0px;
-    border-bottom-right-radius: 50%;
-    border-bottom-left-radius: 50%;
+#news-content{
+    display: flex;
+    flex-direction: column; 
+    width: 70%;
+    background-color: rgb(198, 200, 200);
+    margin: auto;   
+    border-radius: 2%;
 }
-.food{
-    box-shadow: 1px 1px 2px #DA1212,
-    -1px -1px 2px #DA1212;
-    background-color: #DA1212;
-    border-radius: 30%;
-    animation: enlarge .2s alternate infinite;
-}
-
-@keyframes enlarge {
-    from{transform: scale(0.5);}
-    to{transform: scale(1);}
+/* new changes here*/
+#news-card{
+    display: flex;
+    flex-direction: column; 
+    width: 70%;
+    background-color: rgb(198, 200, 200);
+    margin: auto;   
 }
