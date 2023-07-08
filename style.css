@@ -1,0 +1,176 @@
+/*=====Home page Style ======*/
+.home__container {
+    display: flex;
+    flex-direction: column;
+    background-color: #000000;
+    border-radius: 15px;
+  }
+  .home__container .logo {
+    width: 50px;
+    margin: 10px;
+  }
+  .home__container--header {
+    text-align: center;
+    background-color: white;
+    padding: 15px;
+    margin-left: 200px;
+    margin-right: 200px;
+    color: rgb(55, 53, 47);
+    font-weight: 700;
+    line-height: 1.2;
+    font-size: 40px;
+    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji",
+      "Segoe UI Symbol";
+    cursor: text;
+  }
+  
+  .home__container .home__container--btn__container {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  
+  .home__container .home__container--btn__container .btn {
+    padding: 15px;
+    border: none;
+    margin: 20px;
+    margin-bottom: 30px;
+    border-radius: 16px;
+    background: #cfbc19;
+    font-size: 24px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  .latest_news,
+  .updated {
+    text-align: center;
+  }
+  
+  /*==== News Page Css ======*/
+  .news__page--header {
+    display: flex;
+    flex-direction: column;
+    background: #000000;
+    border-radius: 16px;
+    align-items: center;
+    padding: 10px;
+  }
+  .news__page--header .news__page--constant {
+    background: #ffffff;
+    padding: 10px;
+  }
+  .news__page--header .news__page--current {
+    padding: 20px;
+    border: none;
+    margin: 5px;
+    border-radius: 16px;
+    background: #cfbc19;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  
+  .news__page--header .news__page--category .news__page--topics--buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: none;
+    margin: 5px;
+    border-radius: 8px;
+    background: #cfbc19;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  .news__page--header .news__page--topics {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .news__page--header .news__page--topics .news__page--topics--buttons {
+    padding: 10px;
+    border: none;
+    margin: 5px;
+    border-radius: 8px;
+    background: #cfbc19;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .home-page {
+    background-color: #1e9be3;
+    padding: 10px;
+    margin: 5px;
+    border: 2px solid black;
+    border-radius: 10px;
+  }
+  
+  /*==== News Card Style =====*/
+  .news__card {
+    display: flex;
+    justify-content: space-between;
+    background-color: grey;
+    border-radius: 5px;
+    margin: 10px;
+  }
+  
+  .news__card .news__card--header {
+    font-weight: 600;
+  }
+  
+  .news__card--header--name {
+    align-self: flex-start;
+  }
+  
+  .news__card--header--category {
+    align-self: flex-end;
+  }
+  
+  .like--icon--container {
+    cursor: pointer;
+    padding: 10px;
+  }
+  .like--btn {
+    fill: #ffffff;
+    stroke: #000000;
+  }
+  .like--btn--active {
+    fill: red;
+  }
+  
+  /* Media Queries */
+  @media screen and (max-width: 768px) {
+    .home__container--header {
+      margin-left: 50px;
+      margin-right: 50px;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .home__container--header {
+      margin-left: 20px;
+      margin-right: 20px;
+      font-size: 32px;
+    }
+  
+    .home__container .home__container--btn__container .btn {
+      font-size: 20px;
+      margin: 10px;
+    }
+  
+    .news__card {
+      flex-direction: column;
+    }
+  
+    .news__card .news__card--header {
+      text-align: center;
+    }
+  
+    .like--icon--container {
+      padding: 5px;
+    }
+  }
+  
