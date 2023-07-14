@@ -1,204 +1,126 @@
-const newNewsDocs = document.getElementById("newNews");
-const savedNews = document.getElementById("savedNews");
-const allNews = [];
-// let likedNews = [...JSON.parse(localStorage.getItem("savedNewsItems"))];
-let likedNews = localStorage.getItem("savedNewsItems") !== null ? [...JSON.parse(localStorage.getItem("savedNewsItems"))] : [];
+const containerOutput = document.querySelector(".articles-container");
+const newsFeedBtn = document.querySelector(".newsfeed");
+const topicBtn = document.querySelector(".topics-container");
+const allTopic = document.querySelectorAll(".topic-button");
+const favBtn = document.querySelector(".favourites");
+const topicLine = document.querySelector(".topic-line");
+let dataArray = [];
 
-const url =
-  "https://content.newtonschool.co/v1/pr/64806cf8b7d605c99eecde47/news";
-function fetchNews(url, filterKey = "") {
-  fetch(url).then((data) => {
-    data.json().then((res) => {
-      let innerHtml = "";
-      allNews.push(...res);
-      if (filterKey === "") {
-        res.forEach((element, index) => {
-          const newsCard = ` <div class="news__card">
-                  <div class="news__card--header">
-                     <div>By: ${element[" author"]}</div>
-                     <div>category: ${element[" category"]}</div>
-                   </div>
-                   <div class="news__card--body">
-                     ${element["content"]}
-                     <a
-                       class="news__card--link"
-                       href="${element.url}"
-                       target="_blank"
-                       >Read More.</a
-                     >
-                   </div>
-                   <div class="like--icon--container" type="button" onclick="addToLike(${index});">
-                     <svg
-                       xmlns="http://www.w3.org/2000/svg"
-                       width="24"
-                       height="24"
-                       viewBox="0 0 24 24"
-                       class="like--btn + ${likedNews.find((item) => item.url === element.url) && 'like--btn like--btn--active'}"
-                     >
-                       <path
-                         d="M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z"
-                       />
-                     </svg>
-                  </div>
-                 </div>`;
-          innerHtml += newsCard;
-        });
-      } else {
-        res.filter((item) => item[" category"].toLowerCase() === filterKey).forEach((element, index) => {
-          const newsCard = ` <div class="news__card">
-                  <div class="news__card--header">
-                     <div>By: ${element[" author"]}</div>
-                     <div>category: ${element[" category"]}</div>
-                   </div>
-                   <div class="news__card--body">
-                     ${element["content"]}
-                     <a
-                       class="news__card--link"
-                       href="${element.url}"
-                       target="_blank"
-                       >Read More.</a
-                     >
-                   </div>
-                   <div class="like--icon--container" type="button" onclick="addToLike(${index});">
-                     <svg
-                       xmlns="http://www.w3.org/2000/svg"
-                       width="24"
-                       height="24"
-                       viewBox="0 0 24 24"
-                       class="like--btn + ${likedNews.find((item) => item.url === element.url) && 'like--btn like--btn--active'}"
-                     >
-                       <path
-                         d="M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z"
-                       />
-                     </svg>
-                  </div>
-                 </div>`;
-          innerHtml += newsCard;
-        });
-      }
-      newNewsDocs.innerHTML = innerHtml;
+newsFeedBtn.addEventListener("click", () => {
+  if (!newsFeedBtn.classList.contains("active")) {
+    allTopic.forEach((topic) => {
+      topic.classList.remove("active-topic");
     });
+    allTopic[0].classList.add("active-topic");
+    newsFeedBtn.classList.add("active");
+    favBtn.classList.remove("active");
+    topicBtn.style.visibility = "visible";
+    topicLine.style.visibility = "visible";
+    fetchData();
+  }
+});
+
+favBtn.addEventListener("click", () => {
+  if (!favBtn.classList.contains("active")) {
+    newsFeedBtn.classList.remove("active");
+    favBtn.classList.add("active");
+    topicBtn.style.visibility = "hidden";
+    topicLine.style.visibility = "hidden";
+    const favString = localStorage.getItem("fav");
+    const favArray = JSON.parse(favString);
+    const filteredArray = dataArray.filter((newsID) => {
+      return favArray.includes(newsID.id + "");
+    });
+    renderNews(filteredArray);
+  }
+});
+
+topicBtn.addEventListener("click", (e) => {
+  if (e.target.classList.contains("topic-button")) {
+    allTopic.forEach((topic) => {
+      topic.classList.remove("active-topic");
+    });
+    e.target.classList.add("active-topic");
+    if (e.target.textContent === "All") {
+      renderNews(dataArray);
+    } else {
+      const updatedArray = dataArray.filter((news) => {
+        return e.target.textContent.toLowerCase() === news[" category"];
+      });
+      renderNews(updatedArray);
+    }
+  }
+});
+
+async function fetchData() {
+  const data = await fetch(
+    "https://content.newtonschool.co/v1/pr/64806cf8b7d605c99eecde47/news"
+  );
+  const data1 = await data.json();
+  let counter = 1;
+  dataArray = [...data1];
+  dataArray.forEach((object) => {
+    object.id = counter++;
+  });
+  renderNews(dataArray);
+}
+
+function renderNews(array) {
+  containerOutput.innerHTML = "";
+  const favArray = getFromLocalStorage();
+  array.forEach((news) => {
+    const key1 = " author";
+    const key2 = " category";
+    const { [key1]: author, [key2]: category, content, url, id } = news;
+    const favNews = favArray.indexOf(id + "") > -1;
+    let elem = document.createElement("section");
+    elem.className = "article";
+    elem.innerHTML = `<div class="author">By <span class="author-name">${author}</span></div>
+          <div class="category">&#8226; ${category}</div>
+          <div class="content">
+            ${content}
+            <a
+              href="${url}"
+              class="article-link"
+              >Read More</a
+            >
+          </div>
+          <section class="icon-container" onClick="favHandler(event)">
+            <span id="${id}" class="fav-icon fa-regular fa-heart ${
+      favNews ? "fa-solid" : ""
+    }"></span>
+          </section>`;
+    containerOutput.appendChild(elem);
   });
 }
 
-function addToLike(index) {
-  // var value = JSON.parse(event.target.getAttribute('value'));
-  // Use the 'value' variable as needed
-  if (likedNews.find((item) => item.url === allNews[index].url) === undefined) {
-    likedNews.push(allNews[index]);
-    localStorage.setItem("savedNewsItems", JSON.stringify(likedNews));
+function getFromLocalStorage() {
+  const favString = JSON.parse(localStorage.getItem("fav"));
+  if (favString == null || favString == undefined) {
+    return [];
   } else {
-    localStorage.setItem("savedNewsItems", JSON.stringify(likedNews.filter((news) => news.url !== allNews[index].url)));
+    return favString;
   }
-  window.location.reload();
-
 }
 
-function removeLiked(index) {
-  const tempLikedNews = [];
-  likedNews.forEach((item, i) => {
-    if (i !== index) {
-      tempLikedNews.push(item);
-    }
-  })
-  localStorage.setItem("savedNewsItems", JSON.stringify(tempLikedNews));
-  window.location.reload();
+function addToLocalStorage(id) {
+  const favArray = getFromLocalStorage();
+  const updatedFav = [...favArray, id];
+  localStorage.setItem("fav", JSON.stringify(updatedFav));
 }
 
-function fetchSavedNews(filterKey = "") {
-  let innerHtml = "";
-  if (filterKey === "") {
-    JSON.parse(localStorage.getItem("savedNewsItems")).forEach((element, index) => {
-      const newsCard = ` <div class="news__card">
-      <div class="news__card--header">
-        <div>By: ${element[" author"]}</div>
-        <div>category: ${element[" category"]}</div>
-      </div>
-      <div class="news__card--body">
-        ${element["content"]}
-        <a
-          class="news__card--link"
-          href="${element.url}"
-          target="_blank"
-          >Read More.</a
-        >
-      </div>
-      <div class="like--icon--container" type="button" onclick="removeLiked(${index});">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          class="like--btn like--btn--active"
-        >
-          <path
-            d="M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z"
-          />
-        </svg>
-      </div>
-    </div>`;
-      innerHtml += newsCard;
-    });
+function removeFromLocalStorage(id) {
+  const favArray = getFromLocalStorage();
+  const updatedFav = favArray.filter((favID) => favID != id);
+  localStorage.setItem("fav", JSON.stringify(updatedFav));
+}
+
+function favHandler(e) {
+  if (e.target.classList.contains("fa-solid")) {
+    removeFromLocalStorage(e.target.id);
+    e.target.classList.remove("fa-solid");
   } else {
-    JSON.parse(localStorage.getItem("savedNewsItems")).filter((item) => item[" category"].toLowerCase() === filterKey).forEach((element, index) => {
-      const newsCard = ` <div class="news__card">
-      <div class="news__card--header">
-        <div>By: ${element[" author"]}</div>
-        <div>category: ${element[" category"]}</div>
-      </div>
-      <div class="news__card--body">
-        ${element["content"]}
-        <a
-          class="news__card--link"
-          href="${element.url}"
-          target="_blank"
-          >Read More.</a
-        >
-      </div>
-      <div class="like--icon--container" type="button" onclick="removeLiked(${index});">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          class="like--btn like--btn--active"
-        >
-          <path
-            d="M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z"
-          />
-        </svg>
-      </div>
-    </div>`;
-      innerHtml += newsCard;
-    });
+    addToLocalStorage(e.target.id);
+    e.target.classList.add("fa-solid");
   }
-  savedNews.innerHTML = innerHtml;
-}
-
-if (window.location.href.includes("newNews.html")) {
-  fetchNews(url);
-}
-
-if (window.location.href.includes("savedNews.html")) {
-  fetchSavedNews();
-}
-
-function applyFilter(key) {
-  if (window.location.href.includes("newNews.html")) {
-    if (key === "all") {
-      fetchNews(url, "");
-    } else {
-      fetchNews(url, key);
-    }
-  }
-  if (window.location.href.includes("savedNews.html")) {
-
-    if (key === "all") {
-      fetchSavedNews("");
-    } else {
-      fetchSavedNews(key);
-    }
-  }
-
-
 }

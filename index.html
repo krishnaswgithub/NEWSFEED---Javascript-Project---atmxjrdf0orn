@@ -2,35 +2,42 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ns News</title>
     <link rel="stylesheet" href="./style.css" />
+    <script src="./app.js" defer></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>News Feed</title>
   </head>
   <body>
-    <div class="home__container">
-      <div>
-        <img
-          src="https://notion-emojis.s3-us-west-2.amazonaws.com/prod/svg-twitter/1f304.svg"
-          alt="logo"
-          class="logo"
-        />
-      </div>
-      <div class="home__container--header">My News Feed</div>
-      <div class="home__container--btn__container">
-        <button
-          class="btn"
-          onclick="window.location.replace('./savedNews.html')"
-        >
-          Load Saved News
-        </button>
-        <button class="btn" onclick="window.location.replace('./newNews.html')">
-          Load New News
-        </button>
-      </div>
-    </div>
-    <h1 class="latest_news">GET LATEST NEWS</h1>
-    <br />
-    <h1 class="updated">STAY UPDATED</h1>
+    <header>
+      <h1 id="title">The Big News</h1>
+    </header>
+
+    <hr />
+
+    <section class="buttons-container">
+      <button class="feed-button favourites">Load Saved News</button>
+      <button class="feed-button newsfeed">Load New News</button>
+    </section>
+
+    <section class="topics-container">
+      <button class="topic-button">All</button>
+      <button class="topic-button">Business</button>
+      <button class="topic-button">Sports</button>
+      <button class="topic-button">World</button>
+      <button class="topic-button">Politics</button>
+      <button class="topic-button">Science</button>
+      <button class="topic-button">Hatke</button>
+    </section>
+
+    <hr class="topic-line" />
+
+    <section class="articles-container"></section>
   </body>
 </html>
